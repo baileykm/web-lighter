@@ -170,30 +170,15 @@ ___marvon pom.xml___
 ## Web-lighter 配置详述
 - **web-lighter.xml**  _<small>( 可选, 并非必需 )</small>_
 此文件为 _Web-lighter_ 的主配置文件, 在此文件中可自定义关于 _Web-lighter_ 的一些通用配置.  
-web-lighter.xml可配置的信息包括:
-<table width="100%">
-    	<tr>
-        	<th>参数名</th>
-        	<th>默认值</th>
-        	<th>可选值</th>
-        	<th>说明</th>
-    	</tr>
-	<tr>
-       	<td>urlPrefix</td>
-       	<td>```/wl```</td>
-       	<td>String</td>
-       	<td>**url 前缀**  
+web-lighter.xml可配置的信息包括:  
+参数名 | 默认值 | 可选值 | 说明
+----- | -------|------|------
+urlPrefix|`/wl`|String|**url 前缀**  
 			web-lighter 按路径匹配方式拦截需要处理的请求, 即默认状态下, web-lighter 将拦截所有 url 以 "/wl" 开头的 HTTP 请求.   
 			因此, 编写前端代码时应注意为 url 加上前缀, 例如: http://localhost:8080/wl/doSomething
-		</td>
-    	</tr>
-	<tr>
-       	<td>dateFormat</td>
-       	<td>```yyyy-MM-dd hh:mm:ss```</td>
-       	<td></td>
-       	<td>日期型数据序列化/反序列化格式.</td>
-    	</tr>
-</table>
+dateFormat|`yyyy-MM-dd hh:mm:ss`| |日期型数据序列化/反序列化格式.
+
+
 
 你可以直接创建一个 XML 文件或从 web-lighter_xxx.jar 中复制一份放到 _src_ 根目录即可.  
   > web-lighter.xml 配置文件并非必需, 也就是说, 如果 _Web-lighter_ 的默认配置已满足你的需求, 则可省去此配置 web-lighter.xml .
