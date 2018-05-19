@@ -51,7 +51,7 @@ ___marvon pom.xml___
 或者也可以直接下载上述第3方资源, 复制到 Web 项目的 _WEB-INF/lib_ 下, 并将其添加至项目构建路径.
 
 
-## <span id="simple-example">使用示例</span>
+## <a id="simple-example">使用示例</a>
 ### 纯数据 _Request_
 ___-- Java Code --___
 ```java
@@ -191,7 +191,7 @@ dateFormat | `yyyy-MM-dd hh:mm:ss` |    | 日期型数据序列化/反序列化�
 
 > web-lighter.xml 配置文件并非必需, 也就是说, 若上述默认配置已满足你的需求, 则可省去 web-lighter.xml .
   
-### <span id="Request">**@Request**</span>
+### <a id="Request">**@Request**</a>
 ___@Request___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 以标注该方法用于接收并处理 HTTP 请求  
 > _Action_ 为用户自定义 HTTP Request 处理逻辑的封装, 应继承 _com.pr.web.lighter.action.ActionSupport_   
 
@@ -200,7 +200,7 @@ ___@Request___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 
 url |  | String     | 可接收并处理的请求 url<br/>支持通配符和参数, 如: /{param1}/*.action/{param2}. "*" 代表匹配任意个任意字符, {param1} 表示此为参数占位, 其中的 param1为参数名<br/>** 注意 **<br/>- web-lighter 使用路径匹配方式拦截前端请求, 默认情况下, 若请求的 url 匹配模式 "/wl/*" 时将被 web-lighter 拦截并处理. 若需要更改拦截匹配模式, 请在 web-lighter.xml 配置文件中进行设置.<br/>- 前端访问路径记得添加路径前缀 ( 默认为"/wl" ), 如: http://localhost:8080<strong style="color:red">/wl</strong>/doSomething.action<br/>- 本注解的 url 参数无需添加路径前缀, 如: /doSomething, 运行时 web-lighter 将会匹配 /wl/doSomething<br/>- 虽然 url 中支持类似 RESTful Web 风格的参数, 但 web-lighter 暂未完全支持 RESTful Web 的标准方法
 format | `ParamFormat.json` |  `ParamFormat.json`<br/>`ParamFormat.text`  | HTTP 请求中参数的格式, 默认为 JSON 格式<br/>Content-Type = "application/json" 时此参数无效 ( 始终被理解为JSON 格式数据)
 
-### <span id="Upload">**@Upload**</span>
+### <a id="Upload">**@Upload**</a>
 ___@Upload___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 以标注该方法可支持文件上传 ( 单个 / 多个文件 )  
 
 参数 | 默认值 | 取值 | 说明
@@ -210,7 +210,7 @@ maxFileSize | `1024 * 1024 * 40` |  `int`  | 单个文件的最大字节数. 默
 maxRequestSize | `1024 * 1024 * 50` |  `int`  | 请求的最大字节数. 默认50M
 > 注意: HTML 中文件上传 form 的 enctype 属性应为 __"multipart/form-data"__
 
-### <span id="Param">**@Param**</span>
+### <a id="Param">**@Param**</a>
 ___@Param___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法的形参, 以说明该形参对应 HTTP 请求中的哪一个参数 ( 属性 ) 
 
 参数 | 默认值 | 取值 | 说明
@@ -231,7 +231,7 @@ HTTP 请求 `url` | `http://localhost:8080/test/doSomething/999`
 
 > 此时，在 `doSomething` 方法内参数 `str` 和 `id` 的值分别为 "test" 和 999
 
-### <span id="Inject">**@Inject**</span>
+### <a id="Inject">**@Inject**</a>
 ___@Inject___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法的形参.  
 此注解可用于在方法执行时, 将其它参数注入.  
 例如, 如下代码可在调用 `doSomething` 方法时自动实例化1个 `Service` 对象, 并注入.
@@ -240,7 +240,7 @@ public ActionResult doSomething( @Inject Service service ) { ... }
 ```
 
 
-### <span id="ActionResult">**ActionResult**</span>
+### <a id="ActionResult">**ActionResult**</a>
 每一个带有 _@Request_ 的方法均应 return 一个 `ActionResult` 类型的对象, 其中封装了欲向前端回传的数据. ActionResult 对象将最终被序列化为 JSON 格式, 并返回前端.  
 
 ActionResult 包含如下属性: 
