@@ -9,7 +9,49 @@ ___Web-lighter___ 是一个小型的 _Java Web_ 服务器端封装.
 - 多文件上传支持
 
 
-## 使用示例
+## 使用方法概要
+1. 将 web-lighter_xxx.jar 及依赖资源添加至项目构建路径
+2. 定义 `Action` 类, 以封装你的业务逻辑. ( _Action_ 类须继承 _com.pr.web.lighter.action.ActionSupport_ )
+3. 在 _Action_ 类中添加必要的方法 ( method )  
+    3.1 在方法上添加 [`@Request`](#Request) 注解, 以标注该方法可以响应的特定的 HTTP 请求  
+    3.2 若需要上传文件, 可同时在方法上添加 [`@Upload`](#Upload) 注解  
+    3.3 为方法形参表中的参数添加 [`@Param`](#Param) 注解 或  [`@Inject`](#Inject) 注解, 以说明参数值来源  
+    3.4 在方法体中书写你的业务处理代码, 并最终返回 1 个 [`ActionResult`](#ActionResult) 对象  
+> 参见["使用示例"](#simple-example)
+
+
+## 依赖
+web-lighter 1.0.0 依赖于如下第三方资源 
+
+___marvon pom.xml___
+```xml
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.0.1</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.7</version>
+</dependency>
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.8.4</version>
+</dependency>
+<dependency>
+    <groupId>commons-fileupload</groupId>
+    <artifactId>commons-fileupload</artifactId>
+    <version>1.3.3</version>
+</dependency>
+```
+如果你使用 _marvon_, 可将上述代码复制到 _pom.xml_ 文件中的 ```<dependencies>...</dependencies>```节
+
+或者也可以直接下载上述第3方资源, 复制到 Web 项目的 _WEB-INF/lib_ 下, 并将其添加至项目构建路径.
+
+
+## <span id="simple-example">使用示例</span>
 ### 纯数据 _Request_
 ___-- Java Code --___
 ```java
@@ -128,45 +170,6 @@ ___-- HTTP Response --___
 {"code":-1, "message":"Some thing wrong"}
 ```
 
-## 依赖
-web-lighter 1.0.0 依赖于如下第三方资源 
-
-___marvon pom.xml___
-```xml
-<dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>javax.servlet-api</artifactId>
-    <version>3.0.1</version>
-</dependency>
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-lang3</artifactId>
-    <version>3.7</version>
-</dependency>
-<dependency>
-    <groupId>com.google.code.gson</groupId>
-    <artifactId>gson</artifactId>
-    <version>2.8.4</version>
-</dependency>
-<dependency>
-    <groupId>commons-fileupload</groupId>
-    <artifactId>commons-fileupload</artifactId>
-    <version>1.3.3</version>
-</dependency>
-```
-如果你使用 _marvon_, 可将上述代码复制到 _pom.xml_ 文件中的 ```<dependencies>...</dependencies>```节
-
-或者也可以直接下载上述第3方资源, 复制到 Web 项目的 _WEB-INF/lib_ 下, 并将其添加至项目构建路径.
-
-
-## 使用方法概要
-1. 将 web-lighter_xxx.jar 及依赖资源添加至项目构建路径
-2. 定义 _Action_ 类, 以封装你的业务逻辑. ( _Action_ 类须继承 _com.pr.web.lighter.action.ActionSupport_ )
-3. 在 _Action_ 类中添加处理 HTTP Request 的方法, 并在该方法上添加 _@Request_ 注解, 以标注该类可以响应的 HTTP Request. 若同时需要上传文件, 可在该方法上同时添加 _@Upload_ 注解
-4. 为 _Action_ 类中的 HTTP Request 处理方法添加必要的形参, 同时为形参添加 _@Param_ 注解
-5. 在 HTTP Request 处理方法中书写你的业务处理代码, 并最终返回1个 _ActionResult_ 对象
-> 参见前面的 "使用示例"
-
 ## Web-lighter 配置与使用详述
 ### **web-lighter.xml**  _<small>( 可选, 并非必需 )</small>_  
 此文件为 _Web-lighter_ 的主配置文件, 可自定义关于 _Web-lighter_ 的一些通用配置.  
@@ -188,7 +191,7 @@ dateFormat | `yyyy-MM-dd hh:mm:ss` |    | 日期型数据序列化/反序列化�
 
 > web-lighter.xml 配置文件并非必需, 也就是说, 若上述默认配置已满足你的需求, 则可省去 web-lighter.xml .
   
-### **@Request**
+### <span id="Request">**@Request**</span>
 ___@Request___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 以标注该方法用于接收并处理 HTTP 请求  
 > _Action_ 为用户自定义 HTTP Request 处理逻辑的封装, 应继承 _com.pr.web.lighter.action.ActionSupport_   
 
@@ -197,7 +200,7 @@ ___@Request___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 
 url |  | String     | 可接收并处理的请求 url<br/>支持通配符和参数, 如: /{param1}/*.action/{param2}. "*" 代表匹配任意个任意字符, {param1} 表示此为参数占位, 其中的 param1为参数名<br/>** 注意 **<br/>- web-lighter 使用路径匹配方式拦截前端请求, 默认情况下, 若请求的 url 匹配模式 "/wl/*" 时将被 web-lighter 拦截并处理. 若需要更改拦截匹配模式, 请在 web-lighter.xml 配置文件中进行设置.<br/>- 前端访问路径记得添加路径前缀 ( 默认为"/wl" ), 如: http://localhost:8080<strong style="color:red">/wl</strong>/doSomething.action<br/>- 本注解的 url 参数无需添加路径前缀, 如: /doSomething, 运行时 web-lighter 将会匹配 /wl/doSomething<br/>- 虽然 url 中支持类似 RESTful Web 风格的参数, 但 web-lighter 暂未完全支持 RESTful Web 的标准方法
 format | `ParamFormat.json` |  `ParamFormat.json`<br/>`ParamFormat.text`  | HTTP 请求中参数的格式, 默认为 JSON 格式<br/>Content-Type = "application/json" 时此参数无效 ( 始终被理解为JSON 格式数据)
 
-### **@Upload**
+### <span id="Upload">**@Upload**</span>
 ___@Upload___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 以标注该方法可支持文件上传 ( 单个 / 多个文件 )  
 
 参数 | 默认值 | 取值 | 说明
@@ -207,7 +210,7 @@ maxFileSize | `1024 * 1024 * 40` |  `int`  | 单个文件的最大字节数. 默
 maxRequestSize | `1024 * 1024 * 50` |  `int`  | 请求的最大字节数. 默认50M
 > 注意: HTML 中文件上传 form 的 enctype 属性应为 __"multipart/form-data"__
 
-### **@Param**
+### <span id="Param">**@Param**</span>
 ___@Param___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法的形参, 以说明该形参对应 HTTP 请求中的哪一个参数 ( 属性 ) 
 
 参数 | 默认值 | 取值 | 说明
@@ -228,7 +231,7 @@ HTTP 请求 `url` | `http://localhost:8080/test/doSomething/999`
 
 > 此时，在 `doSomething` 方法内参数 `str` 和 `id` 的值分别为 "test" 和 999
 
-### **@Inject**
+### <span id="Inject">**@Inject**</span>
 ___@Inject___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法的形参.  
 此注解可用于在方法执行时, 将其它参数注入.  
 例如, 如下代码可在调用 `doSomething` 方法时自动实例化1个 `Service` 对象, 并注入.
@@ -237,7 +240,7 @@ public ActionResult doSomething( @Inject Service service ) { ... }
 ```
 
 
-### **ActionResult**
+### <span id="ActionResult">**ActionResult**</span>
 每一个带有 _@Request_ 的方法均应 return 一个 `ActionResult` 类型的对象, 其中封装了欲向前端回传的数据. ActionResult 对象将最终被序列化为 JSON 格式, 并返回前端.  
 
 ActionResult 包含如下属性: 
