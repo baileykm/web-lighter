@@ -115,6 +115,13 @@ public class ActionHelper {
         // 配置并创建Gson对象
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat(WebLighterConfig.getDateFormat());
+
+        //        gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+        //            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        //                return new Date(json.getAsJsonPrimitive().getAsLong());
+        //            }
+        //        });
+
         gson = gsonBuilder.create();
 
         List<FileInfo>           fileInfos         = null;          // 上传的文件信息
@@ -123,7 +130,7 @@ public class ActionHelper {
         if (method.isAnnotationPresent(Upload.class)) {     // 带文件上传的请求
             // 接收并保存文件
             Upload       annotation = method.getAnnotation(Upload.class);
-            UploadResult resultInfo = new UploadUtil().upload(req, annotation.uploadDir(), null, annotation.maxFileSize(), annotation.maxRequestSize());
+            UploadResult resultInfo = new UploadUtil().upload(req, annotation.uploadDir(), annotation.nameRule(), annotation.maxFileSize(), annotation.maxRequestSize());
             requestParameters.putAll(parseParams(resultInfo.getParameters(), paramFormat));
             fileInfos = resultInfo.getFiles();
         } else {    // 普通的请求
@@ -218,9 +225,9 @@ public class ActionHelper {
      */
     private Map<String, JsonElement> parseParams(HttpServletRequest req, ParamFormat paramFormat) throws IOException, ActionException {
         String contentType = req.getContentType();
-        if (contentType == null || "application/x-www-form-urlencoded".equals(contentType)) {
+        if (contentType == null || contentType.indexOf("application/x-www-form-urlencoded") >= 0) {
             return parseParams(req.getParameterMap(), paramFormat);
-        } else if ("application/json".equals(contentType)) {
+        } else if (contentType.indexOf("application/json") >= 0) {
             JsonObject               jsonObject = gson.fromJson(gson.newJsonReader(req.getReader()), JsonObject.class);
             Map<String, JsonElement> params     = new LinkedHashMap<>();
             for (String name : jsonObject.keySet()) {

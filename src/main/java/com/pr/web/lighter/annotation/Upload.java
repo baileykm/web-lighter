@@ -18,6 +18,14 @@ public @interface Upload {
     String uploadDir() default "upload";
 
     /**
+     * 服务器端文件命名规则
+     * <p>规则中的星号("*")表示此部分使用UUID替换, 例如: "tmp*" 表示使用 "tmp" + 32位UUID 作为文件名</p>
+     * <p>文件扩展名始终与原文件一致</p>
+     * @return 服务器端文件命名规则
+     */
+    String nameRule() default "*";
+
+    /**
      * 单个文件的最大字节数
      * @return 单个文件的最大字节数
      */

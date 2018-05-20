@@ -178,14 +178,14 @@ web-lighter.xml 中可配置的信息包括:
 参数 | 默认值 | 取值 | 说明
 ----- | -------|------|------
 urlPrefix | `/wl` | String     | **url 前缀**<br/> web-lighter 按路径匹配方式拦截需要处理的请求, 即默认状态下, web-lighter 将拦截所有 url 以 "/wl" 开头的 HTTP 请求.<br/> 因此, 编写前端代码时应注意为 url 加上前缀, 例如: http://localhost:8080/wl/doSomething
-dateFormat | `yyyy-MM-dd hh:mm:ss` |    | 日期型数据序列化/反序列化格式.
+dateFormat | `yyyy-MM-dd'T'HH:mm:ss'Z'` |    | 日期型数据序列化/反序列化格式, 默认采用UTC格式
 
 > 你可以直接创建一个 XML 文件或从 web-lighter_xxx.jar 中复制一份放到 _src_ 根目录即可. web-lighter.xml 文件格式如下:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
     <urlPrefix>/wl</urlPrefix>
-    <dateFormat>yyyy-MM-dd hh:mm:ss</dateFormat>
+    <dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
 </configuration>
 ```
 
@@ -205,7 +205,8 @@ ___@Upload___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, �
 
 参数 | 默认值 | 取值 | 说明
 ----- | -------|------|------
-uploadDir | upload | String     | 文件上传后的保存路径. 默认为网站根目录下的 upload 子目录
+uploadDir | upload | String     | 上传文件的保存路径. 默认为网站根目录下的 upload 子目录
+nameRule | * | String | 文件在服务器端的命名规则<br/>规则中的星号 ( "\*" ) 表示此部分使用UUID替换, 例如: " tmp\_\* " 表示使用 " tmp\_ " + 32位UUID 作为文件名<br/>文件扩展名始终与原文件一致
 maxFileSize | `1024 * 1024 * 40` |  `int`  | 单个文件的最大字节数. 默认40M
 maxRequestSize | `1024 * 1024 * 50` |  `int`  | 请求的最大字节数. 默认50M
 > 注意: HTML 中文件上传 form 的 enctype 属性应为 __"multipart/form-data"__
