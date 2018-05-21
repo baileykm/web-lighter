@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 
 /**
- * web-light 的总体配置
+ * web-lighter 的总体配置
  *
  * @author Bailey
  */
