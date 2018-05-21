@@ -189,6 +189,7 @@ printUrlMapReport | `false` |  boolean  | 是否输出URL映射报表. 开发时
 <configuration>
     <urlPrefix>/wl</urlPrefix>
     <dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
+    <printUrlMapReport>false</printUrlMapReport>
 </configuration>
 ```
 
