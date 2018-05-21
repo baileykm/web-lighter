@@ -181,6 +181,7 @@ web-lighter.xml 中可配置的信息包括:
 ----- | -------|------|------
 urlPrefix | `/wl` | String     | **url 前缀**<br/> web-lighter 按路径匹配方式拦截需要处理的请求, 即默认状态下, web-lighter 将拦截所有 url 以 "/wl" 开头的 HTTP 请求.<br/> 因此, 编写前端代码时应注意为 url 加上前缀, 例如: http://localhost:8080/wl/doSomething
 dateFormat | `yyyy-MM-dd'T'HH:mm:ss'Z'` |    | 日期型数据序列化/反序列化格式, 默认采用UTC格式
+printUrlMapReport | `false` |  boolean  | 是否输出URL映射报表. 开发时可设置为true, 以获得详细的 url 映射信息
 
 > 你可以直接创建一个 XML 文件或从 web-lighter_xxx.jar 中复制一份放到 _src_ 根目录即可. web-lighter.xml 文件格式如下:
 ```xml

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
+    <!-- HTTP 请求 URL 前缀 -->
     <urlPrefix>/wl</urlPrefix>
+
+    <!-- 日期型数据的序列化/反序列化格式 -->
     <dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
+
+    <!-- 是否输出URL映射报表 -->
+    <printUrlMapReport>false</printUrlMapReport>
 </configuration>

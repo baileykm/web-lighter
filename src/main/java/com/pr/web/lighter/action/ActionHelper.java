@@ -10,6 +10,7 @@ import com.pr.web.lighter.utils.upload.FileInfo;
 import com.pr.web.lighter.utils.upload.UploadResult;
 import com.pr.web.lighter.utils.upload.UploadUtil;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +46,7 @@ public class ActionHelper {
      * @see RequestHandler
      */
     public static void initRequestHandlers() {
+        long start = System.currentTimeMillis();
         // 获得所有ActionSupport的子类
         List<Class<ActionSupport>> actionClasses = new ClassHelper().getSubClasses(ActionSupport.class);
         // 临时存储已缓存过的RequestHandler, 用于判定是否多个方法用于处理同一个请求
@@ -64,7 +66,8 @@ public class ActionHelper {
             }
         }
 
-        System.out.println("RequestHandler Initialized, " + requestHandlers.size() + " request(s) mapped.");
+        System.out.println("RequestHandler Initialized in " + (System.currentTimeMillis() - start) + "ms. " + requestHandlers.size() + " request(s) mapped.");
+        if (WebLighterConfig.isPrintUrlMapReport()) System.out.println(getRequestHandlersReport());
     }
 
     /**
@@ -86,11 +89,24 @@ public class ActionHelper {
      * @return 映射表
      */
     public static String getRequestHandlersReport() {
-        StringBuffer sb = new StringBuffer();
-
+        Map<String, String> map                 = new LinkedHashMap<>();
+        int                 maxUrlLength        = 0;
+        int                 maxMethodNameLength = 0;
+        int                 len;
         for (RequestHandler handler : requestHandlers) {
-            sb.append(WebLighterConfig.getUrlPrefix() + handler.getUrlPattern() + " ==> " + handler.getActionClass().getName() + "." + handler.getMethod().getName() + "()\n");
+            String url    = handler.getUrlPattern();
+            String method = handler.getActionClass().getName() + "." + handler.getMethod().getName() + "()";
+            map.put(url, method);
+            if ((len = url.length()) > maxUrlLength) maxUrlLength = len;
+            if ((len = method.length()) > maxMethodNameLength) maxMethodNameLength = len;
         }
+        String       line = StringUtils.leftPad("", maxUrlLength + maxMethodNameLength + WebLighterConfig.getUrlPrefix().length() + 5, "-") + "\n";
+        StringBuffer sb   = new StringBuffer();
+        sb.append(line);
+        for (String k : map.keySet()) {
+            sb.append(WebLighterConfig.getUrlPrefix() + StringUtils.rightPad(k, maxUrlLength, " ") + " ==> " + map.get(k) + "\n");
+        }
+        sb.append(line);
         return sb.toString();
     }
 
@@ -115,13 +131,6 @@ public class ActionHelper {
         // 配置并创建Gson对象
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat(WebLighterConfig.getDateFormat());
-
-        //        gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-        //            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        //                return new Date(json.getAsJsonPrimitive().getAsLong());
-        //            }
-        //        });
-
         gson = gsonBuilder.create();
 
         List<FileInfo>           fileInfos         = null;          // 上传的文件信息

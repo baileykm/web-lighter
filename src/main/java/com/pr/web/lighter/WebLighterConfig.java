@@ -27,11 +27,15 @@ public class WebLighterConfig {
 
         // HTTP请求URL前缀
         @XmlElement(name = "urlPrefix")
-        private String urlPrefix = "/wl";
+        public String urlPrefix = "/wl";
 
-        // 日期格式
+        // 日期型数据的序列化/反序列化格式
         @XmlElement(name = "dateFormat")
-        private String dateFormat = "yyyy-MM-dd hh:mm:ss";
+        public String dateFormat = "yyyy-MM-dd hh:mm:ss";
+
+        // 是否输出URL映射报表
+        @XmlElement(name = "printUrlMapReport")
+        public boolean printUrlMapReport = false;
     }
 
     /**
@@ -44,13 +48,23 @@ public class WebLighterConfig {
     }
 
     /**
-     * 获得日期型数据的序列化格式
+     * 获得日期型数据的序列化/反序列化格式
      *
-     * @return 日期型数据的序列化格式
+     * @return 日期型数据的序列化/反序列化格式
      */
     public static String getDateFormat() {
         return config.dateFormat;
     }
+
+    /**
+     * 是否输出URL映射报表
+     * @return 是否输出URL映射报表
+     */
+    public static boolean isPrintUrlMapReport() {
+        return config.printUrlMapReport;
+    }
+
+    ;
 
     /**
      * 加载配置信息
@@ -69,9 +83,7 @@ public class WebLighterConfig {
 
             config = (Configuration) unmarshaller.unmarshal(configFile);
         } catch (Exception e) {
-            System.err.println("[ INFO ] 读取配置文件失败 " + ((configFile == null) ? "" : "["+configFile.getAbsolutePath())+"]" + ", 使用默认值");
+            System.err.println("[ INFO ] 读取配置文件失败 " + ((configFile == null) ? "" : "[" + configFile.getAbsolutePath()) + "]" + ", 使用默认值");
         }
     }
-
-
 }
