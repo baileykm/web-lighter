@@ -170,6 +170,8 @@ ___-- HTTP Response --___
 {"code":-1, "message":"Some thing wrong"}
 ```
 
+> 注意: 日期数据序列化时默认使用 ***UTC*** 格式 , 即无论上行/下行, 日期参数值格式均形如 "2000-01-01T00:00:00Z"
+
 ## Web-lighter 配置与使用详述
 ### **web-lighter.xml**  _<small>( 可选, 并非必需 )</small>_  
 此文件为 _Web-lighter_ 的主配置文件, 可自定义关于 _Web-lighter_ 的一些通用配置.  
