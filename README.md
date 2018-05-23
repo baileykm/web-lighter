@@ -170,7 +170,7 @@ ___-- HTTP Response --___
 {"code":-1, "message":"Some thing wrong"}
 ```
 
-> 注意: 日期数据序列化和反序列化时使用 ***ISO 8601 (UTC Timezone)*** 格式 _( yyyy-MM-dd'T'HH:mm:ss.sss'Z' )_ , 即无论上行/下行, 日期参数值格式均形如 "2000-01-01T00:00:000Z"
+> 注意: 日期数据序列化和反序列化时使用 ***ISO 8601 (UTC Timezone)*** 格式 _( yyyy-MM-dd'T'HH:mm:ss.SSS'Z' )_ , 即无论上行/下行, 日期参数值格式均形如 "2000-01-01T00:00:000Z"
 
 ## Web-lighter 配置与使用详述
 ### **web-lighter.xml**  _<small>( 可选, 并非必需 )</small>_  
