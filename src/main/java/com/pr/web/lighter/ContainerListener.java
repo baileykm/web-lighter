@@ -24,8 +24,6 @@ public class ContainerListener implements ServletContextListener {
         // 初始化 ActionHelper
         ActionHelper.initRequestHandlers();
 
-        //        System.out.println(ActionHelper.getRequestHandlersReport());
-
         ServletContext context = sce.getServletContext();
         context.addServlet("wlqDispatcher", DispatcherServlet.class).addMapping(WebLighterConfig.getUrlPrefix() + "/*");
     }

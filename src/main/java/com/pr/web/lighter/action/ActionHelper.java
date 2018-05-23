@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pr.web.lighter.WebLighterConfig;
 import com.pr.web.lighter.annotation.*;
 import com.pr.web.lighter.utils.ClassHelper;
+import com.pr.web.lighter.utils.GsonUTCDateAdapter;
 import com.pr.web.lighter.utils.upload.FileInfo;
 import com.pr.web.lighter.utils.upload.UploadResult;
 import com.pr.web.lighter.utils.upload.UploadUtil;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.*;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -37,7 +39,17 @@ import java.util.*;
 public class ActionHelper {
     final private static List<RequestHandler> requestHandlers = new ArrayList<>();
 
-    private Gson gson;
+    private static Gson gson;
+
+    public ActionHelper() {
+        // 配置并创建Gson对象
+        GsonBuilder        gsonBuilder        = new GsonBuilder();
+        GsonUTCDateAdapter gsonUTCDateAdapter = new GsonUTCDateAdapter();
+        gsonBuilder.registerTypeAdapter(Date.class, gsonUTCDateAdapter);
+        gsonBuilder.registerTypeAdapter(java.sql.Date.class, gsonUTCDateAdapter);
+        gsonBuilder.registerTypeAdapter(Timestamp.class, gsonUTCDateAdapter);
+        gson = gsonBuilder.create();
+    }
 
     /**
      * 初始化requestHandlers
@@ -122,16 +134,15 @@ public class ActionHelper {
      * @see RequestHandler
      */
     public void execute(RequestHandler handler, String url, HttpServletRequest req, HttpServletResponse resp) throws ActionException, IOException {
+        if (WebLighterConfig.isPrintUrlMapReport()) {
+            System.out.println(WebLighterConfig.getUrlPrefix() + url + " ==> " + handler.getActionClass().getName() + "." + handler.getMethod().getName() + "()");
+        }
+
         Method  method            = handler.getMethod(); // 处理请求的Action方法
         Request RequestAnnotation = method.getAnnotation(Request.class);
 
         // 参数数据格式
         ParamFormat paramFormat = RequestAnnotation.format();
-
-        // 配置并创建Gson对象
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat(WebLighterConfig.getDateFormat());
-        gson = gsonBuilder.create();
 
         List<FileInfo>           fileInfos         = null;          // 上传的文件信息
         Map<String, JsonElement> requestParameters = new LinkedHashMap<>();         // 参数集合

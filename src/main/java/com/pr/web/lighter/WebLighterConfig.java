@@ -29,10 +29,6 @@ public class WebLighterConfig {
         @XmlElement(name = "urlPrefix")
         public String urlPrefix = "/wl";
 
-        // 日期型数据的序列化/反序列化格式
-        @XmlElement(name = "dateFormat")
-        public String dateFormat = "yyyy-MM-dd hh:mm:ss";
-
         // 是否输出URL映射报表
         @XmlElement(name = "printUrlMapReport")
         public boolean printUrlMapReport = false;
@@ -45,15 +41,6 @@ public class WebLighterConfig {
      */
     public static String getUrlPrefix() {
         return config.urlPrefix;
-    }
-
-    /**
-     * 获得日期型数据的序列化/反序列化格式
-     *
-     * @return 日期型数据的序列化/反序列化格式
-     */
-    public static String getDateFormat() {
-        return config.dateFormat;
     }
 
     /**
