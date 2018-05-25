@@ -16,7 +16,7 @@ import java.util.TimeZone;
  * @author Bailey
  */
 public class GsonUTCDateAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
-    final public static String     UTC_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.sss'Z'";
+    final public static String     UTC_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     final private       DateFormat dateFormat;
 
     public GsonUTCDateAdapter() {

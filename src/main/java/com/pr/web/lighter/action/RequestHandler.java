@@ -54,7 +54,9 @@ public class RequestHandler {
 
     // 替换原始 url-pattern 中的占位符, 形成正则表达式
     static String getUlrRegex(String urlPattern) {
-        return urlPattern.replaceAll("\\*", "\\\\w+").replaceAll("\\.", "\\\\.").replaceAll("\\{\\w+\\}", "(\\\\w+)");
+        String pattern = urlPattern.replaceAll("\\*", "\\\\w+").replaceAll("\\.", "\\\\.").replaceAll("\\{\\w+\\}", "(\\\\w+)");
+        pattern =  "^" + pattern + "$";
+        return pattern;
     }
 
     boolean isMatched(String url) {
