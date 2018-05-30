@@ -1,11 +1,11 @@
-package com.pr.web.lighter.utils.upload;
+package com.pr.web.lighter.utils.file;
 
 /**
  * 上传的文件信息
  *
  * @author Bailey
  */
-public class FileInfo {
+public class UploadFileInfo {
     // 表单中该文件上传字段的名称
     private String fieldName;
     // 原文件名
@@ -24,7 +24,7 @@ public class FileInfo {
      * @param fileType       文件MIME类型
      * @param serverFileName 服务器端文件名
      */
-    public FileInfo(String fieldName, String origFileName, long fileSize, String fileType, String serverFileName) {
+    public UploadFileInfo(String fieldName, String origFileName, long fileSize, String fileType, String serverFileName) {
         this.fieldName = fieldName;
         this.origFileName = origFileName;
         this.fileSize = fileSize;

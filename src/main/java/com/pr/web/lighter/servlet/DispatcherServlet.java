@@ -21,6 +21,7 @@ public class DispatcherServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html;charset=UTF-8");
 
         // 获得处理当前请求的 RequestHandler
         String         url     = req.getRequestURI().substring((req.getContextPath() + WebLighterConfig.getUrlPrefix()).length());

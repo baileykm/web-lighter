@@ -39,6 +39,10 @@ public class ActionResult {
         return success(CODE_SUCCESS, data, message, total);
     }
 
+    public static ActionResult success(Object data, Long total) {
+        return success(CODE_SUCCESS, data, null, total);
+    }
+
     public static ActionResult success(Object data, String message) {
         return success(data, message, null);
     }

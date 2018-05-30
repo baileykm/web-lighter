@@ -7,9 +7,7 @@ import com.pr.web.lighter.WebLighterConfig;
 import com.pr.web.lighter.annotation.*;
 import com.pr.web.lighter.utils.ClassHelper;
 import com.pr.web.lighter.utils.GsonUTCDateAdapter;
-import com.pr.web.lighter.utils.upload.FileInfo;
-import com.pr.web.lighter.utils.upload.UploadResult;
-import com.pr.web.lighter.utils.upload.UploadUtil;
+import com.pr.web.lighter.utils.file.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +33,7 @@ import java.util.*;
  * @see Inject
  * @see Param
  * @see Upload
+ * @see Download
  */
 public class ActionHelper {
     final private static List<RequestHandler> requestHandlers = new ArrayList<>();
@@ -144,7 +143,7 @@ public class ActionHelper {
         // 参数数据格式
         ParamFormat paramFormat = RequestAnnotation.format();
 
-        List<FileInfo>           fileInfos         = null;          // 上传的文件信息
+        List<UploadFileInfo>     fileInfos         = null;          // 上传的文件信息
         Map<String, JsonElement> requestParameters = new LinkedHashMap<>();         // 参数集合
 
         if (method.isAnnotationPresent(Upload.class)) {     // 带文件上传的请求
@@ -175,16 +174,26 @@ public class ActionHelper {
         }
 
         // 请求处理结果
-        ActionResult actionResult = invoke(handler, req, requestParameters, fileInfos);
+        ActionResult actionResult = invoke(handler, req, resp, requestParameters, fileInfos);
 
         if (actionResult == null) {
             throw new ActionException("The Action Result Unassigned!!!");
         }
 
-        // 回传结果
-        PrintWriter writer = resp.getWriter();
-        gson.toJson(actionResult, writer);
-        writer.flush();
+        if (!method.isAnnotationPresent(Download.class) || actionResult.getCode() < 0) {
+            // 非文件下载请求, 回传结果
+            PrintWriter writer = resp.getWriter();
+            gson.toJson(actionResult, writer);
+            writer.flush();
+        } else {
+            // 文件下载请求
+            if (!(actionResult.getResult() instanceof DownloadFileInfo)) {
+                throw new ActionException("The result property of ActionResult REQUIRE an instance of com.pr.web.lighter.utils.file.DownloadFileInfo");
+            }
+
+            DownloadFileInfo fileInfo= (DownloadFileInfo) actionResult.getResult();
+            new DownloadUtil().download(req, resp, fileInfo);
+        }
     }
 
     /**
@@ -263,15 +272,16 @@ public class ActionHelper {
      * 调用请求处理函数, 同时注入相关参数
      *
      * @param handler           处理请求的 RequestHandler 对象
-     * @param req               请求的 Request 对象
+     * @param req               Request 对象
+     * @param resp              Response 对象
      * @param requestParameters 参数集合, key 为参数名, value 为参数值
      * @param fileInfos         上传的文件信息
      * @return 封装为 ActionResult 的处理结果
-     * @throws ActionException
+     * @throws ActionException Action处理异常
      * @see JsonElement
      * @see ActionResult
      */
-    private ActionResult invoke(RequestHandler handler, HttpServletRequest req, Map<String, JsonElement> requestParameters, List<FileInfo> fileInfos) throws ActionException {
+    private ActionResult invoke(RequestHandler handler, HttpServletRequest req, HttpServletResponse resp, Map<String, JsonElement> requestParameters, List<UploadFileInfo> fileInfos) throws ActionException {
 
         // 创建Action实例
         ActionSupport action;
@@ -279,6 +289,7 @@ public class ActionHelper {
         try {
             action = handler.getActionClass().newInstance();
             action.setRequest(req);
+            action.setResponse(resp);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new ActionException("Creating Action instance error: " + handler.getActionClass().getName(), e);
         }
@@ -309,7 +320,7 @@ public class ActionHelper {
 
             // 参数带@ParamFileInfo注解, 本参数用于接收上传文件信息
             if (param.isAnnotationPresent(ParamFileInfo.class)) {
-                if (param.getType().isAssignableFrom(FileInfo.class)) {  // 函数只接收单个文件信息, 取fileInfo中的第0个元素
+                if (param.getType().isAssignableFrom(UploadFileInfo.class)) {  // 函数只接收单个文件信息, 取fileInfo中的第0个元素
                     paramValues[i] = (fileInfos != null && !fileInfos.isEmpty()) ? fileInfos.get(0) : null;
                 } else { // List, 接收多个文件信息
                     paramValues[i] = fileInfos;

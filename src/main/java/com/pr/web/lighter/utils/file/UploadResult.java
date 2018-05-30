@@ -1,4 +1,4 @@
-package com.pr.web.lighter.utils.upload;
+package com.pr.web.lighter.utils.file;
 
 import com.google.gson.Gson;
 
@@ -10,12 +10,12 @@ import java.util.*;
  */
 public  class UploadResult {
 
-    private List<FileInfo> files = new ArrayList<>();
+    private List<UploadFileInfo> files = new ArrayList<>();
 
     private Map<String, List<String>> parameters = new LinkedHashMap<>();
 
     public void addFile(String fieldName, String origFileName, long fileSize, String fileType, String serverFileName) {
-        FileInfo file = new FileInfo(fieldName, origFileName, fileSize, fileType, serverFileName);
+        UploadFileInfo file = new UploadFileInfo(fieldName, origFileName, fileSize, fileType, serverFileName);
         files.add(file);
     }
 
@@ -32,7 +32,7 @@ public  class UploadResult {
      * 获得成功上传的文件信息
      * @return 成功上传的文件信息
      */
-    public List<FileInfo> getFiles() {
+    public List<UploadFileInfo> getFiles() {
         return files;
     }
 

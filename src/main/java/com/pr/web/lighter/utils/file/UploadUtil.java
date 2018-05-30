@@ -1,4 +1,4 @@
-package com.pr.web.lighter.utils.upload;
+package com.pr.web.lighter.utils.file;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -55,7 +55,7 @@ public class UploadUtil {
 
         // 构造临时路径来存储上传的文件
         // 这个路径相对当前应用的目录
-        String uploadPath = request.getServletContext().getRealPath("./") + File.separator + uploadRelativePath;
+        String uploadPath = request.getServletContext().getRealPath("/") + File.separator + uploadRelativePath;
 
         // 如果目录不存在则创建
         File uploadDir = new File(uploadPath);
@@ -83,8 +83,14 @@ public class UploadUtil {
                                     + origFileName.substring(origFileName.lastIndexOf(".", origFileName.length()));
                         }
 
+                        File folder = new File(uploadPath);
+                        if (!folder.exists()) {
+                            folder.mkdirs();
+                        }
+
                         String filePath  = uploadPath + File.separator + serverFileName;
                         File   storeFile = new File(filePath);
+
                         item.write(storeFile); // 保存文件到硬盘
                         result.addFile(fieldName, origFileName, item.getSize(), item.getContentType(), serverFileName);
                     } else {    // 普通表单字段
@@ -95,9 +101,6 @@ public class UploadUtil {
         } catch (Exception e) {
             throw new RuntimeException("上传文件出错!!!", e);
         }
-
         return result;
     }
-
-
 }

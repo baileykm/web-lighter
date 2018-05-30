@@ -1,6 +1,7 @@
 package com.pr.web.lighter.action;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -10,10 +11,15 @@ import javax.servlet.http.HttpSession;
  */
 public abstract class ActionSupport {
 
-    private HttpServletRequest request;
+    private HttpServletRequest  request;
+    private HttpServletResponse response;
 
     void setRequest(HttpServletRequest request) {
         this.request = request;
+    }
+
+    void setResponse(HttpServletResponse response) {
+        this.response = response;
     }
 
     /**
@@ -24,6 +30,16 @@ public abstract class ActionSupport {
     protected HttpServletRequest getRequest() {
         return request;
     }
+
+    /**
+     * 获得Response对象
+     *
+     * @return Response
+     */
+    protected HttpServletResponse getResponse() {
+        return response;
+    }
+
 
     /**
      * 获得Session对象

@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * 标注当前形参为可接收文件信息.
  * <p>参数类型必须为 FileInfo 或 {@code List<FileInfo> }. 若参数类型为 FileInfo 则注入成功上传的第1个文件信息</p>
  *
- * @see com.pr.web.lighter.utils.upload.FileInfo
+ * @see com.pr.web.lighter.utils.file.UploadFileInfo
  */
 
 @Target(ElementType.PARAMETER)

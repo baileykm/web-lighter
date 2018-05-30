@@ -12,11 +12,12 @@ ___Web-lighter___ 是一个小型的 _Java Web_ 服务器端封装.
 ## 使用方法概要
 1. 将 web-lighter_xxx.jar 及依赖资源添加至项目构建路径
 2. 定义 `Action` 类, 以封装你的业务逻辑. ( _Action_ 类须继承 _com.pr.web.lighter.action.ActionSupport_ )
-3. 在 _Action_ 类中添加必要的方法 ( method )  
-    3.1 在方法上添加 [`@Request`](#Request) 注解, 以标注该方法可以响应的特定的 HTTP 请求  
-    3.2 若需要上传文件, 可同时在方法上添加 [`@Upload`](#Upload) 注解  
-    3.3 为方法形参表中的参数添加 [`@Param`](#Param) 注解 或  [`@Inject`](#Inject) 注解, 以说明参数值来源  
-    3.4 在方法体中书写你的业务处理代码, 并最终返回 1 个 [`ActionResult`](#ActionResult) 对象  
+3. 在 _Action_ 类中添加必要的 _HTTP Request_ 处理方法 ( 以下简称 _Action方法_ )  
+    3.1 在 _Action方法_ 上添加 [`@Request`](#Request) 注解, 以标注该方法可以响应的特定的 HTTP 请求  
+    3.2 为 _Action方法_ 形参表中的参数添加 [`@Param`](#Param) 注解 或  [`@Inject`](#Inject) 注解, 以说明参数值来源  
+    3.3 在 _Action方法_ 体中书写你的业务处理代码, 并最终返回 [`ActionResult`](#ActionResult) 实例  
+4. 若需要支持文件上传或下载, 可同时在 _Action方法_ 上添加 `@Upload` 和 `@Download` 注解 ( 具体使用方法参见  [`@Upload`](#Upload) 和  [`@Download`](#Download) 注解说明部分 )  
+
 > 参见["使用示例"](#simple-example)
 
 
@@ -274,4 +275,17 @@ total | Long | 全部记录数. 通常用于分页查询时返回符合条件的
 }
 ```
 
+### <a id="Download">**@Download**</a>  
+___@Download___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 以标注该方法用于支持前端文件下载  
+* 可在 HTTP Request 处理方法中添加必要的逻辑, 以判定是否允许下载指定的资源.
+* _Action_ 处理方法应始终返回一个 _ActionResult_ 实例. 
+* 若禁止下载指定资源, 应返回标记为"失败"的 _ActionResult_ 实例, 例如:   
+`return ActionResult.failure("您无权下载此资源");`
+* 若允许下载指定资源, 则应返回标记为"成功"的 _ActionResult_ 实例, 同时将资源信息带回, 例如:  
+```java
+    // ...
+    File file = new File("C:\\serverFile.txt");     // 待下载的文件. 亦可是 InputStream 
+    String clientFileName = "test.txt";             // 客户端保存时的默认文件名
+    return ActionResult.success(new DownloadFileInfo(file, clientFileName));
+```
 -----
