@@ -19,6 +19,13 @@ public class DownloadUtil {
 
     private final static int BUFFER_SIZE = 1024 * 1024;
 
+    /**
+     * 对文件名进行编码. IE 和 其他浏览器使用的默认字符集编码不一致, 为避免前端文件名显示乱码, 须区别处理
+     * @param req Request对象
+     * @param fileName 文件名
+     * @return 经过编码的文件名
+     * @throws UnsupportedEncodingException 不支持的字符集
+     */
     private String encodeFileName(HttpServletRequest req, String fileName) throws UnsupportedEncodingException {
         UserAgent userAgent = UserAgent.parseUserAgentString(req.getHeader("User-Agent"));
         Browser   browser   = userAgent.getBrowser();

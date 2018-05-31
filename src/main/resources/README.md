@@ -1,56 +1,50 @@
 # Web-lighter
-___Web-lighter___ 是一个小型的 _Java Web_ 服务器端封装.
+ **Web-lighter** 是一个小型的 _Java Web_ 服务器端封装.
 
-## Web-lighter 能做什么? 
+##  **web-lighter**  能做什么? 
 - 分发 _HTTP Request_ : 接收 _Http_ 请求并分发给用户自定义的 _Action-Method_ 进行处理, 并将处理结果发回前端
 - _HTTP Request_ 参数的自动解析与注入( 支持 _text / json_ )
-- _Action_ 自动实例化与调用 ( _Action_ 为用户自定义逻辑的封装 )
+- _Action_ 自动实例化与执行 ( _Action_ 为用户自定义逻辑的封装 )
 - 基于 _Java Annotation_ ( Java注解 ) 的注入配置
 - 多文件上传支持
+- 文件下载支持 ( 可添加下载鉴权逻辑 )
 
 
 ## 使用方法概要
-1. 将 web-lighter_xxx.jar 及依赖资源添加至项目构建路径
+1. 安装 **web-lighter** 及依赖资源
 2. 定义 `Action` 类, 以封装你的业务逻辑. ( _Action_ 类须继承 _com.pr.web.lighter.action.ActionSupport_ )
-3. 在 _Action_ 类中添加必要的方法 ( method )  
-    3.1 在方法上添加 [`@Request`](#Request) 注解, 以标注该方法可以响应的特定的 HTTP 请求  
-    3.2 若需要上传文件, 可同时在方法上添加 [`@Upload`](#Upload) 注解  
-    3.3 为方法形参表中的参数添加 [`@Param`](#Param) 注解 或  [`@Inject`](#Inject) 注解, 以说明参数值来源  
-    3.4 在方法体中书写你的业务处理代码, 并最终返回 1 个 [`ActionResult`](#ActionResult) 对象  
+3. 在 _Action_ 类中添加必要的 _HTTP Request_ 处理方法 __( 以下简称 _Action方法_ )__  
+    3.1 在 _Action方法_ 上添加 [`@Request`](#Request) 注解, 以标注该方法可以响应的特定的 HTTP 请求  
+    3.2 为 _Action方法_ 形参表中的参数添加 [`@Param`](#Param) 注解 或  [`@Inject`](#Inject) 注解, 以说明参数值来源  
+    3.3 在 _Action方法_ 体中书写你的业务处理代码, 并最终返回 [`ActionResult`](#ActionResult) 实例  
+4. 若需要支持文件上传或下载, 可同时在 _Action方法_ 上添加 `@Upload` 和 `@Download` 注解 ( 具体使用方法参见  [`@Upload`](#Upload) 和  [`@Download`](#Download) 注解说明部分 )  
+
 > 参见["使用示例"](#simple-example)
 
 
-## 依赖
-web-lighter 1.0.0 依赖于如下第三方资源 
+## 安装方法
+- Maven 安装  
+ **web-lighter**  已发布至 _Maven Central Repository_ ,  如果你使用 _Maven_ 可将下面的代码复制到 _pom.xml_ 文件中的 `<dependencies>...</dependencies>` 一节
 
-___marvon pom.xml___
 ```xml
 <dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>javax.servlet-api</artifactId>
-    <version>3.0.1</version>
-</dependency>
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-lang3</artifactId>
-    <version>3.7</version>
-</dependency>
-<dependency>
-    <groupId>com.google.code.gson</groupId>
-    <artifactId>gson</artifactId>
-    <version>2.8.4</version>
-</dependency>
-<dependency>
-    <groupId>commons-fileupload</groupId>
-    <artifactId>commons-fileupload</artifactId>
-    <version>1.3.3</version>
+    <groupId>com.github.baileykm</groupId>
+    <artifactId>web-lighter</artifactId>
+    <version>1.0.3</version>
 </dependency>
 ```
-如果你使用 _marvon_, 可将上述代码复制到 _pom.xml_ 文件中的 ```<dependencies>...</dependencies>```节
 
-或者也可以直接下载上述第3方资源, 复制到 Web 项目的 _WEB-INF/lib_ 下, 并将其添加至项目构建路径.
+- 直接下载 *web-lighter.xxx.jar* 及第3方资源, 复制到 Web 项目的 _WEB-INF/lib_ 下, 并将其添加至项目构建路径.  
+> *web-lighter* 依赖于如下第3方资源:  
+    - javax.servlet-api-3.0.1.jar  
+    - commons-lang3-3.7.jar  
+    - commons-io-2.2.jar  
+    - commons-fileupload-1.3.3.jar  
+    - gson-2.8.4.jar  
+    - UserAgentUtils-1.2.4.jar  
+    
 
-
+    
 ## <a id="simple-example">使用示例</a>
 ### 纯数据 _Request_
 ___-- Java Code --___
@@ -121,7 +115,7 @@ ___-- HTTP Response --___
 ___-- Java Code --___
 ```java
 public class ActionExampleWithFile extends ActionSupport {
-    @Request(uri = "/doSomeThingWithFile")                 // 标注此方法可以接收的 url
+    @Request(uri = "/doSomeThingWithFile")                 // 标注此方法可以接收的url
     @Upload                                                // 标注此方法可支持文件上传
     public ActionResult doSomeThingWithFile(
         @Inject ServiceExample service,                    // Service - Action中需要使用到的Servie对象, 自动实例化并注入
@@ -170,30 +164,33 @@ ___-- HTTP Response --___
 {"code":-1, "message":"Some thing wrong"}
 ```
 
+> 注意: 日期数据序列化和反序列化时使用 ***ISO 8601 (UTC Timezone)*** 格式 _( yyyy-MM-dd'T'HH:mm:ss.SSS'Z' )_ , 即无论上行/下行, 日期参数值格式均形如 "2000-01-01T01:01:01.001Z"
+
+
 ## Web-lighter 配置与使用详述
 ### **web-lighter.xml**  _<small>( 可选, 并非必需 )</small>_  
-此文件为 _Web-lighter_ 的主配置文件, 可自定义关于 _Web-lighter_ 的一些通用配置.  
+此文件为 **web-lighter** 的主配置文件, 可自定义关于 _Web-lighter_ 的一些通用配置.  
 web-lighter.xml 中可配置的信息包括:  
 
 参数 | 默认值 | 取值 | 说明
 ----- | -------|------|------
-urlPrefix | `/wl` | String     | **url 前缀**<br/> web-lighter 按路径匹配方式拦截需要处理的请求, 即默认状态下, web-lighter 将拦截所有 url 以 "/wl" 开头的 HTTP 请求.<br/> 因此, 编写前端代码时应注意为 url 加上前缀, 例如: http://localhost:8080/wl/doSomething
-dateFormat | `yyyy-MM-dd'T'HH:mm:ss'Z'` |    | 日期型数据序列化/反序列化格式, 默认采用UTC格式
+urlPrefix | `/wl` | String     | **url 前缀**<br/> **web-lighter** 按路径匹配方式拦截需要处理的请求, 即默认状态下, **web-lighter** 将拦截所有 url 以 "/wl" 开头的 HTTP 请求.<br/> 因此, 编写前端代码时应注意为 url 加上前缀, 例如: http://localhost:8080/wl/doSomething
+printUrlMapReport | `false` |  boolean  | 是否输出URL映射报表. 开发时可设置为true, 以获得详细的 url 映射信息
 
 > 你可以直接创建一个 XML 文件或从 web-lighter_xxx.jar 中复制一份放到 _src_ 根目录即可. web-lighter.xml 文件格式如下:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
     <urlPrefix>/wl</urlPrefix>
-    <dateFormat>yyyy-MM-dd'T'HH:mm:SSS'Z'</dateFormat>
+    <printUrlMapReport>false</printUrlMapReport>
 </configuration>
 ```
 
 > web-lighter.xml 配置文件并非必需, 也就是说, 若上述默认配置已满足你的需求, 则可省去 web-lighter.xml .
   
 ### <a id="Request">**@Request**</a>
-___@Request___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 以标注该方法用于接收并处理 HTTP 请求  
-> _Action_ 为用户自定义 HTTP Request 处理逻辑的封装, 应继承 _com.pr.web.lighter.action.ActionSupport_   
+___@Request___ 注解应用于 _Action_ 方法上, 以标注该方法用于接收并处理 HTTP 请求  
+> _Action_ 为用户自定义 HTTP 请求处理逻辑的封装, 应继承 _com.pr.web.lighter.action.ActionSupport_   
 
 参数 | 默认值 | 取值 | 说明
 ----- | -------|------|------
@@ -201,7 +198,7 @@ url |  | String     | 可接收并处理的请求 url<br/>支持通配符和参�
 format | `ParamFormat.json` |  `ParamFormat.json`<br/>`ParamFormat.text`  | HTTP 请求中参数的格式, 默认为 JSON 格式<br/>Content-Type = "application/json" 时此参数无效 ( 始终被理解为JSON 格式数据)
 
 ### <a id="Upload">**@Upload**</a>
-___@Upload___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法上, 以标注该方法可支持文件上传 ( 单个 / 多个文件 )  
+___@Upload___ 注解应用于 _Action_ 方法上, 以标注该方法可支持文件上传 ( 单个 / 多个文件 )  
 
 参数 | 默认值 | 取值 | 说明
 ----- | -------|------|------
@@ -212,13 +209,13 @@ maxRequestSize | `1024 * 1024 * 50` |  `int`  | 请求的最大字节数. 默认
 > 注意: HTML 中文件上传 form 的 enctype 属性应为 __"multipart/form-data"__
 
 ### <a id="Param">**@Param**</a>
-___@Param___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法的形参, 以说明该形参对应 HTTP 请求中的哪一个参数 ( 属性 ) 
+___@Param___ 注解应用于  _Action_ 方法的形参, 以说明该形参对应 HTTP 请求中的哪一个参数 ( 属性 ) 
 
 参数 | 默认值 | 取值 | 说明
 ----- | -------|------|------
 name | data | String     | HTTP 请求中的参数名
 
-> _web-lighter_ 会自动从 HTTP 请求中获取参数值并在方法调用时自动注入.  
+> **web-lighter** 会自动从 HTTP 请求中获取参数值并在方法调用时自动注入.  
 若 HTTP 请求中参数为 JSON 格式, 同时 _@Request_ 的 _format_ 取值为 `ParamFormat.json` ( 默认值 ), 则将自动解析此 JSON 数据, 以封装为形参所需要的对象. 
 
 > 若 _@Request_ 中 url 设置带有参数占位, 则调用 Action 方法时亦将同时注入从 HTTP 请求的 url 中解析得到的参数.  
@@ -233,7 +230,7 @@ HTTP 请求 `url` | `http://localhost:8080/test/doSomething/999`
 > 此时，在 `doSomething` 方法内参数 `str` 和 `id` 的值分别为 "test" 和 999
 
 ### <a id="Inject">**@Inject**</a>
-___@Inject___ 注解应用于 _Action_ 类中的 HTTP Request 处理方法的形参.  
+___@Inject___ 注解应用于 _Action_ 方法的形参.  
 此注解可用于在方法执行时, 将其它参数注入.  
 例如, 如下代码可在调用 `doSomething` 方法时自动实例化1个 `Service` 对象, 并注入.
 ```java
@@ -242,7 +239,7 @@ public ActionResult doSomething( @Inject Service service ) { ... }
 
 
 ### <a id="ActionResult">**ActionResult**</a>
-每一个带有 _@Request_ 的方法均应 return 一个 `ActionResult` 类型的对象, 其中封装了欲向前端回传的数据. ActionResult 对象将最终被序列化为 JSON 格式, 并返回前端.  
+每一个带有 _@Request_ 的 _Action_ 方法均应返回一个 `ActionResult` 类型的对象, 其中封装了欲向前端回传的数据. ActionResult 对象将最终被序列化为 JSON 格式, 并返回前端.  
 
 ActionResult 包含如下属性: 
 属性 | 数据类型 | 含意
@@ -264,12 +261,23 @@ total | Long | 全部记录数. 通常用于分页查询时返回符合条件的
         }, {
         "id": 2, 
         "name": "John"
-        },
-        ...
-        ],
+        }],
     "message": "success",
     "total": 99
 }
 ```
 
+### <a id="Download">**@Download**</a>  
+___@Download___ 注解应用于 _Action_ 方法上, 以标注该方法用于支持前端文件下载  
+* 可在 _Action_ 方法中添加必要的逻辑, 以判定是否允许下载指定的资源.
+* _Action_ 处理方法应始终返回一个 _ActionResult_ 实例. 
+* 若禁止下载指定资源, 应返回标记为"失败"的 _ActionResult_ 实例, 例如:   
+`return ActionResult.failure("您无权下载此资源");`
+* 若允许下载指定资源, 则应返回标记为"成功"的 _ActionResult_ 实例, 同时将资源信息带回, 例如:  
+```java
+    // ...
+    File file = new File("C:\\serverFile.docx");        // 待下载的文件. 亦可是 InputStream 
+    String clientFileName = "你的文档.docx";             // 客户端保存时的默认文件名
+    return ActionResult.success(new DownloadFileInfo(file, clientFileName));
+```
 -----
