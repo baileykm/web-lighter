@@ -219,15 +219,21 @@ name | data | String     | HTTP 请求中的参数名
 若 HTTP 请求中参数为 JSON 格式, 同时 _@Request_ 的 _format_ 取值为 `ParamFormat.json` ( 默认值 ), 则将自动解析此 JSON 数据, 以封装为形参所需要的对象. 
 
 > 若 _@Request_ 中 url 设置带有参数占位, 则调用 Action 方法时亦将同时注入从 HTTP 请求的 url 中解析得到的参数.  
-> 例如:   
 
-`` | ``
------ | -------
-_@Request_ url 值 | `/{p1}/doSomething/{p2}`
-HTTP 请求 url | `http://localhost:8080/test/doSomething/999`
-方法声明 | public ActionResult doSomething( <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Param(name = "p1") String str, <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Param(name = "p2") Integer id) )<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ ... }
+例如:   
 
-> 此时，在 `doSomething` 方法内参数 `str` 和 `id` 的值分别为 "test" 和 999
+- _@Request_ url 值:   
+/{p1}/doSomething/{p2}  
+- HTTP 请求 url:   
+http://localhost:8080/test/doSomething/999  
+- 方法声明:
+```java
+public ActionResult doSomething( 
+    @Param(name = "p1") String str,
+    @Param(name = "p2") Integer id)) 
+{ ... }
+```
+此时，在 `doSomething` 方法内参数 `str` 和 `id` 的值分别为 "test" 和 999
 
 ### <a id="Inject">**@Inject**</a>
 ___@Inject___ 注解应用于 _Action_ 方法的形参.  
