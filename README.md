@@ -223,9 +223,9 @@ name | data | String     | HTTP 请求中的参数名
 
 `` | ``
 ----- | -------
-_@Request_  `url` | `/{p1}/doSomething/{p2}`
-HTTP 请求 `url` | `http://localhost:8080/test/doSomething/999`
-方法声明 | `public ActionResult doSomething( @Param(name = "p1") String str, @Param(name = "p2") Integer id)) { ... }`
+_@Request_ url 值 | `/{p1}/doSomething/{p2}`
+HTTP 请求 url | `http://localhost:8080/test/doSomething/999`
+方法声明 | public ActionResult doSomething( <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Param(name = "p1") String str, <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Param(name = "p2") Integer id) )<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ ... }
 
 > 此时，在 `doSomething` 方法内参数 `str` 和 `id` 的值分别为 "test" 和 999
 
