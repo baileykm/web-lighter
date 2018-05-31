@@ -225,7 +225,7 @@ name | data | String     | HTTP 请求中的参数名
 - _@Request_ url 值:   
 /{p1}/doSomething/{p2}  
 - HTTP 请求 url:   
-http://localhost:8080/test/doSomething/999  
+http://localhost:8080/wl/test/doSomething/999  
 - 方法声明:
 ```java
 public ActionResult doSomething( 
