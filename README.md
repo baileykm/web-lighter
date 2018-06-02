@@ -247,7 +247,8 @@ public ActionResult doSomething( @Inject Service service ) { ... }
 ### <a id="ActionResult">**ActionResult**</a>
 每一个带有 _@Request_ 的 _Action_ 方法均应返回一个 `ActionResult` 类型的对象, 其中封装了欲向前端回传的数据. ActionResult 对象将最终被序列化为 JSON 格式, 并返回前端.  
 
-ActionResult 包含如下属性: 
+ActionResult 包含如下属性:  
+
 属性 | 数据类型 | 含意
 ----- | ---- | -------
 code | int | 状态码, 标识业务处理结果. 默认情况下, 正确 ( 成功 ) 为 0, 错误 ( 失败 ) 为 -1
