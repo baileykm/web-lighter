@@ -26,5 +26,5 @@ web-lighter 是笔者实现的一个小型 Java Web 应用程序的服务端封�
 
 ## Web-lighter 使用方法
 
-请移步 [Web-lighter 介绍](https://baileykm.github.io/2018/06/01/Web-lighter-一个小型的-Java-Web-服务器端封装)
+请移步 [Web-lighter文档](https://baileykm.github.io/2018/06/01/Web-lighter-一个小型的-Java-Web-服务器端封装)
 
