@@ -19,7 +19,7 @@ OK, 开始吧...
 
 1. 使用你喜欢的 IDE 创建一个动态 Java Web 项目 (步骤略)
 
-2. 将 Web-lighter 的 Jar 文件及其依赖添加到项目构建路径 (参见下节 "Web-lighter 安装", 支持 Maven)
+2. 将 Web-lighter 的 Jar 文件及其依赖添加到项目构建路径 (支持 Maven)
 
 3. 创建一个 Java 类 (`ActionExample.java`), 代码如下:
 
